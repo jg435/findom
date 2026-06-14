@@ -9,14 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.104.1",
     "@supabase/supabase-js": "^2.108.1",
     "lithic": "^0.140.0",
     "next": "14.2.35",
+    "openai": "^6.42.0",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@mermaid-js/mermaid-cli": "^11.15.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

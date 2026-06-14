@@ -1,0 +1,19 @@
+sequenceDiagram
+    autonumber
+    actor You
+    participant POS as 🏪 Merchant
+    participant S as 💳 Stripe Issuing
+    participant W as /api/webhooks/stripe
+    participant AI as 🤖 Claude
+    participant DB as Supabase
+
+    You->>POS: tap FinDom card at Taco Bell
+    POS->>S: authorization request
+    S->>S: pre-filter (blocked MCC categories)
+    S->>W: authorization.request  ⏱ ~2s window
+    W->>DB: card → owner → that card's rules + monthly history
+    W->>AI: classifyTransaction(...)
+    AI-->>W: DECLINE  (under 1.5s)
+    W-->>S: decline
+    S-->>POS: ✗ card declined at the register
+    W->>DB: log transaction (status: declined)

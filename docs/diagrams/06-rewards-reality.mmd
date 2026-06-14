@@ -1,0 +1,18 @@
+flowchart TD
+    IDEA["💡 Idea: virtual card auto-bills<br/>my best rewards card (Amex Gold 4x dining)"]
+    IDEA --> P1{"Fund a card with<br/>a credit card?"}
+    P1 -->|"❌ counts as cash advance<br/>(no rewards, fees)"| BLOCK1["blocked by card networks"]
+    IDEA --> P2{"Route through us to<br/>keep the 4x bonus?"}
+    P2 -->|"❌ issuer sees US, not the merchant<br/>→ category bonus lost"| BLOCK2["MCC pass-through problem"]
+    IDEA --> P3{"Just do it anyway?"}
+    P3 -->|"❌ Amex blocks intermediaries<br/>+ 50-state money-transmitter licenses"| BLOCK3["legal / network wall"]
+
+    BLOCK1 --> ANS
+    BLOCK2 --> ANS
+    BLOCK3 --> ANS
+    ANS["✅ Phase 2 instead:<br/>RECOMMEND the best card to swipe<br/>→ real card used directly → full points"]
+
+    classDef bad fill:#7f1d1d,stroke:#450a0a,color:#fff;
+    classDef good fill:#16a34a,stroke:#14532d,color:#fff;
+    class BLOCK1,BLOCK2,BLOCK3 bad;
+    class ANS good;

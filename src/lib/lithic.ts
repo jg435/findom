@@ -6,16 +6,29 @@ export const lithic = new Lithic({
   environment: "sandbox",
 });
 
+// Lithic follows Standard Webhooks: signs over "{webhook-id}.{webhook-timestamp}.{body}"
+// Secret is base64-encoded with a "whsec_" prefix
 export function verifyLithicWebhook(payload: string, headers: Headers): boolean {
-  const signature = headers.get("X-Lithic-Signature");
-  if (!signature) return false;
+  const msgId = headers.get("webhook-id");
+  const msgTimestamp = headers.get("webhook-timestamp");
+  const msgSignature = headers.get("webhook-signature");
+
+  if (!msgId || !msgTimestamp || !msgSignature) return false;
 
   const secret = process.env.LITHIC_WEBHOOK_SECRET!;
-  // Lithic signs with HMAC-SHA256 over the raw body using the webhook secret
-  const expected = createHmac("sha256", secret).update(payload).digest("hex");
-  try {
-    return timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-  } catch {
-    return false;
-  }
+  const secretBytes = Buffer.from(secret.replace("whsec_", ""), "base64");
+
+  const toSign = `${msgId}.${msgTimestamp}.${payload}`;
+  const computed = createHmac("sha256", secretBytes).update(toSign).digest("base64");
+
+  // Header may contain multiple space-separated "v1,<sig>" entries
+  const signatures = msgSignature.split(" ").map((s) => s.split(",")[1]).filter(Boolean);
+
+  return signatures.some((sig) => {
+    try {
+      return timingSafeEqual(Buffer.from(sig), Buffer.from(computed));
+    } catch {
+      return false;
+    }
+  });
 }

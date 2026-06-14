@@ -1,0 +1,37 @@
+flowchart TD
+    subgraph CLIENT["🖥️  Web App — Next.js"]
+        LOGIN["🔐 Login"]
+        CARDS["My Cards<br/>💳 'Dining' — no fast food<br/>💳 'Groceries' — $400/mo cap"]
+        PRULES["Per-card Rules"]
+    end
+
+    subgraph SERVER["⚙️  API"]
+        US["User-scoped client<br/>RLS — your rows only"]
+        SR["Service-role client<br/>Stripe webhook only"]
+        BRAIN["🧠 classifyTransaction()<br/>REUSED unchanged"]
+    end
+
+    CLAUDE["🤖 Claude"]
+    DB[("🗄️ Supabase + Row-Level Security<br/>users · cards · rules · transactions")]
+    STRIPE["💳 Stripe Issuing — sandbox<br/>virtual cards · spend controls · sponsor bank"]
+    POS["🏪 Merchant / POS"]
+
+    LOGIN -->|JWT| US
+    CARDS --> US
+    PRULES --> US
+    US --> BRAIN
+    SR --> BRAIN
+    BRAIN --> CLAUDE
+    US --> DB
+    SR --> DB
+    POS -->|real swipe| STRIPE
+    STRIPE -->|"auth request (~2s)"| SR
+    SR -->|approve / decline| STRIPE
+    US -->|issue / freeze cards| STRIPE
+
+    classDef brain fill:#16a34a,stroke:#14532d,color:#fff;
+    classDef ext fill:#1e293b,stroke:#0f172a,color:#fff;
+    classDef stripe fill:#635bff,stroke:#3c34c9,color:#fff;
+    class BRAIN brain;
+    class CLAUDE,DB ext;
+    class STRIPE stripe;

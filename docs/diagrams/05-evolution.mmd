@@ -1,0 +1,32 @@
+flowchart LR
+    subgraph NOW["TODAY — POC"]
+        direction TB
+        A1["one user"]
+        A2["one global rule list"]
+        A3["simulated charges"]
+        A4["logs a decision"]
+        A5["open database"]
+        A6["🧠 the BRAIN ✅"]
+    end
+
+    subgraph NEXT["NEXT — Phase 1"]
+        direction TB
+        B1["many users · login"]
+        B2["rules per card"]
+        B3["real virtual cards"]
+        B4["blocks a live swipe"]
+        B5["locked down · RLS"]
+        B6["🧠 the SAME brain, reused"]
+    end
+
+    A1 --> B1
+    A2 --> B2
+    A3 --> B3
+    A4 --> B4
+    A5 --> B5
+    A6 ==> B6
+
+    classDef now fill:#334155,stroke:#1e293b,color:#fff;
+    classDef next fill:#16a34a,stroke:#14532d,color:#fff;
+    class A1,A2,A3,A4,A5,A6 now;
+    class B1,B2,B3,B4,B5,B6 next;

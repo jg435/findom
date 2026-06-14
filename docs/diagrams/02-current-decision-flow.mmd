@@ -1,0 +1,13 @@
+sequenceDiagram
+    autonumber
+    actor You
+    participant API as /api/simulate
+    participant DB as Supabase
+    participant AI as 🤖 Claude
+
+    You->>API: merchant + amount<br/>("GRUBHUB*LEMONTHAI…", $24)
+    API->>DB: fetch enabled rules + this month's approved orders
+    API->>AI: classify(merchant, rules, history)
+    AI-->>API: DECLINE — "general Thai spot, not health-focused"
+    API->>DB: log the transaction
+    API-->>You: ✗ DECLINED (with reason)

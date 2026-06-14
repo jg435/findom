@@ -1,0 +1,26 @@
+flowchart TD
+    subgraph CLIENT["🖥️  Web App — Next.js"]
+        DASH["Dashboard<br/>simulate a charge + stats"]
+        RUL["Rules<br/>add / toggle (plain English)"]
+        TXN["Transactions<br/>history + AI reasons"]
+    end
+
+    subgraph SERVER["⚙️  API — Next.js routes"]
+        SIM["/api/simulate"]
+        BRAIN["🧠 classifyTransaction()<br/>strict judgment · monthly caps · fail-closed"]
+    end
+
+    CLAUDE["🤖 Claude<br/>via OpenRouter"]
+    DB[("🗄️ Supabase Postgres<br/>rules · transactions<br/>single-tenant · no auth")]
+
+    DASH --> SIM
+    RUL --> SERVER
+    TXN --> SERVER
+    SIM --> BRAIN
+    BRAIN --> CLAUDE
+    SIM --> DB
+
+    classDef brain fill:#16a34a,stroke:#14532d,color:#fff;
+    classDef ext fill:#1e293b,stroke:#0f172a,color:#fff;
+    class BRAIN brain;
+    class CLAUDE,DB ext;

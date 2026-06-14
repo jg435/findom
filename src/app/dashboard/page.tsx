@@ -1,21 +1,26 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import TransactionRow from "@/components/TransactionRow";
+import TransactionSimulator from "@/components/TransactionSimulator";
 import type { Transaction } from "@/lib/types";
 
 export default function DashboardPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch("/api/transactions?limit=50")
+  const loadTransactions = useCallback(() => {
+    return fetch("/api/transactions?limit=50")
       .then((r) => r.json())
       .then((data) => {
         setTransactions(Array.isArray(data) ? data : []);
         setLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    loadTransactions();
+  }, [loadTransactions]);
 
   const approved = transactions.filter((t) => t.decision === "APPROVE").length;
   const declined = transactions.filter((t) => t.decision === "DECLINE").length;
@@ -42,6 +47,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      <TransactionSimulator onComplete={loadTransactions} />
+
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold">Recent Transactions</h2>
         <Link href="/transactions" className="text-sm text-gray-400 hover:text-white">
@@ -55,7 +62,7 @@ export default function DashboardPage() {
         <div className="rounded-lg bg-gray-900 border border-gray-800 p-8 text-center">
           <p className="text-gray-400 text-sm">No transactions yet.</p>
           <p className="text-gray-600 text-xs mt-1">
-            Simulate one via the Lithic sandbox to see it here.
+            Run a charge above to see it here.
           </p>
         </div>
       ) : (
